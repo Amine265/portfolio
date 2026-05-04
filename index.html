@@ -870,6 +870,176 @@ section {
   margin-top: 10px;
 }
 
+/* ===================== RSS FEED ===================== */
+.rss-section { }
+.rss-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.rss-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.rss-live-dot {
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+.rss-sub { font-size: 13px; color: var(--muted); }
+.rss-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rss-filter {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+}
+.rss-filter:hover { border-color: rgba(168,85,247,0.4); color: var(--text); }
+.rss-filter.active {
+  background: var(--grad1);
+  border-color: transparent;
+  color: #fff;
+}
+.rss-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.rss-loading {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.rss-spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--violet);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.rss-error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.rss-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+  transition: border-color 0.3s, transform 0.3s, background 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.rss-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.rss-card[data-source="mit"]::before { background: var(--grad2); }
+.rss-card[data-source="hf"]::before { background: var(--grad1); }
+.rss-card[data-source="decoder"]::before { background: var(--grad3); }
+.rss-card:hover {
+  border-color: rgba(168,85,247,0.25);
+  transform: translateY(-4px);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+.rss-card:hover::before { opacity: 1; }
+.rss-card-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rss-source-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 100px;
+}
+.badge-mit { background: rgba(6,182,212,0.12); color: var(--cyan); border: 1px solid rgba(6,182,212,0.2); }
+.badge-hf { background: rgba(255,77,202,0.12); color: var(--pink); border: 1px solid rgba(255,77,202,0.2); }
+.badge-decoder { background: rgba(168,85,247,0.12); color: var(--violet); border: 1px solid rgba(168,85,247,0.2); }
+.rss-date { font-size: 11px; color: var(--dim); margin-left: auto; }
+.rss-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.rss-desc {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+.rss-read {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--violet);
+  margin-top: 4px;
+  transition: gap 0.2s;
+}
+.rss-card:hover .rss-read { gap: 8px; }
+.rss-hidden { display: none !important; }
+
+@media (max-width: 768px) {
+  .rss-grid { grid-template-columns: 1fr; }
+  .rss-header { flex-direction: column; }
+}
+
 /* ===================== CONTACT ===================== */
 #contact { text-align: center; }
 .contact-inner {
@@ -992,7 +1162,7 @@ footer {
     Amine<br>
     <span class="grad-text">Boutahar</span>
   </h1>
-  <p class="hero-role">Développeur Fullstack</p>
+  <p class="hero-role">Développeur</p>
   <p class="hero-desc">
     Étudiant en 2ème année de BTS SIO SLAM à l'EFREI Paris,
     en alternance chez MBWebAgency. Passionné par le développement
@@ -1304,6 +1474,7 @@ footer {
     <h2 class="section-title">Ce que je suis</h2>
   </div>
 
+  <!-- Sources -->
   <div class="veille-container reveal">
     <div class="veille-intro">
       <p class="veille-sujet">Intelligence<br>Artificielle</p>
@@ -1311,31 +1482,19 @@ footer {
       <div class="veille-topics">
         <div class="veille-topic">
           <span class="topic-icon">🤖</span>
-          <div class="topic-text">
-            <strong>LLM & Modèles</strong>
-            Évolution de GPT-4o, Claude, Gemini et leurs capacités de génération de code.
-          </div>
+          <div class="topic-text"><strong>LLM & Modèles</strong>Évolution de GPT-4o, Claude, Gemini et leurs capacités de génération de code.</div>
         </div>
         <div class="veille-topic">
           <span class="topic-icon">💡</span>
-          <div class="topic-text">
-            <strong>IA & Développement</strong>
-            GitHub Copilot, Cursor — impact de l'IA sur les pratiques des devs.
-          </div>
+          <div class="topic-text"><strong>IA & Développement</strong>GitHub Copilot, Cursor — impact de l'IA sur les pratiques des devs.</div>
         </div>
         <div class="veille-topic">
           <span class="topic-icon">🛡️</span>
-          <div class="topic-text">
-            <strong>IA & Sécurité</strong>
-            Deepfakes, prompt injection, enjeux de protection des données.
-          </div>
+          <div class="topic-text"><strong>IA & Sécurité</strong>Deepfakes, prompt injection, enjeux de protection des données.</div>
         </div>
         <div class="veille-topic">
           <span class="topic-icon">📋</span>
-          <div class="topic-text">
-            <strong>Réglementation</strong>
-            AI Act européen et implications pour les développeurs.
-          </div>
+          <div class="topic-text"><strong>Réglementation</strong>AI Act européen et implications pour les développeurs.</div>
         </div>
       </div>
     </div>
@@ -1344,38 +1503,63 @@ footer {
       <div class="source-card">
         <span class="source-icon">📰</span>
         <p class="source-nom">MIT Technology Review</p>
-        <p class="source-desc">Publication de référence sur les avancées technologiques mondiales en IA et machine learning.</p>
+        <p class="source-desc">Publication de référence sur les avancées technologiques mondiales en IA.</p>
         <span class="source-tag">Site web</span>
       </div>
       <div class="source-card">
         <span class="source-icon">🤗</span>
         <p class="source-nom">Hugging Face Blog</p>
-        <p class="source-desc">Actualités de la communauté open-source autour des modèles de langage et du deep learning.</p>
+        <p class="source-desc">Actualités de la communauté open-source autour des LLM et du deep learning.</p>
         <span class="source-tag">Blog technique</span>
       </div>
       <div class="source-card">
         <span class="source-icon">📡</span>
         <p class="source-nom">The Decoder</p>
-        <p class="source-desc">Veille spécialisée sur l'IA générative, les LLM et leurs applications concrètes.</p>
+        <p class="source-desc">Veille spécialisée sur l'IA générative et ses applications concrètes.</p>
         <span class="source-tag">Newsletter</span>
       </div>
       <div class="source-card">
         <span class="source-icon">▶️</span>
         <p class="source-nom">YouTube — Dot CSV</p>
-        <p class="source-desc">Vulgarisation des derniers papiers de recherche en IA, accessibles aux étudiants en info.</p>
+        <p class="source-desc">Vulgarisation des derniers papiers de recherche en IA.</p>
         <span class="source-tag">Vidéo</span>
       </div>
       <div class="source-card">
         <span class="source-icon">🎵</span>
         <p class="source-nom">TikTok — @ia.tech</p>
-        <p class="source-desc">Créateurs spécialisés en IA qui vulgarisent les dernières actualités en format court et accessible.</p>
+        <p class="source-desc">Actualités IA vulgarisées en format court et accessible.</p>
         <span class="source-tag">Réseau social</span>
       </div>
       <div class="source-card">
         <span class="source-icon">𝕏</span>
         <p class="source-nom">X — @OpenAI / @AnthropicAI</p>
-        <p class="source-desc">Annonces officielles des acteurs IA et discussions entre chercheurs en temps réel.</p>
+        <p class="source-desc">Annonces officielles des acteurs IA en temps réel.</p>
         <span class="source-tag">Réseau social</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flux RSS en direct -->
+  <div class="rss-section reveal" style="margin-top: 48px;">
+    <div class="rss-header">
+      <div>
+        <p class="rss-label">
+          <span class="rss-live-dot"></span>
+          Articles en direct
+        </p>
+        <p class="rss-sub">Dernières actualités IA récupérées automatiquement</p>
+      </div>
+      <div class="rss-filters" id="rssFilters">
+        <button class="rss-filter active" data-source="all">Tous</button>
+        <button class="rss-filter" data-source="mit">MIT Review</button>
+        <button class="rss-filter" data-source="hf">Hugging Face</button>
+        <button class="rss-filter" data-source="decoder">The Decoder</button>
+      </div>
+    </div>
+    <div class="rss-grid" id="rssGrid">
+      <div class="rss-loading">
+        <div class="rss-spinner"></div>
+        <p>Chargement des articles…</p>
       </div>
     </div>
   </div>
@@ -1466,6 +1650,129 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 reveals.forEach(el => observer.observe(el));
+
+// ===================== RSS FEED =====================
+const RSS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+const RSS_SOURCES = [
+  {
+    key: 'mit',
+    name: 'MIT Review',
+    url: 'https://www.technologyreview.com/feed/',
+    badgeClass: 'badge-mit'
+  },
+  {
+    key: 'hf',
+    name: 'Hugging Face',
+    url: 'https://huggingface.co/blog/feed.xml',
+    badgeClass: 'badge-hf'
+  },
+  {
+    key: 'decoder',
+    name: 'The Decoder',
+    url: 'https://the-decoder.com/feed/',
+    badgeClass: 'badge-decoder'
+  }
+];
+
+let allArticles = [];
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html || '';
+  return tmp.textContent || tmp.innerText || '';
+}
+
+function buildCard(article) {
+  const source = RSS_SOURCES.find(s => s.key === article.source);
+  const desc = stripHtml(article.description).substring(0, 160).trim();
+  const card = document.createElement('a');
+  card.className = 'rss-card';
+  card.href = article.link;
+  card.target = '_blank';
+  card.rel = 'noopener noreferrer';
+  card.dataset.source = article.source;
+  card.innerHTML = `
+    <div class="rss-card-source">
+      <span class="rss-source-badge ${source.badgeClass}">${source.name}</span>
+      <span class="rss-date">${formatDate(article.pubDate)}</span>
+    </div>
+    <p class="rss-title">${article.title}</p>
+    <p class="rss-desc">${desc}${desc.length >= 160 ? '…' : ''}</p>
+    <span class="rss-read">
+      Lire l'article
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </span>
+  `;
+  return card;
+}
+
+function renderArticles(filter = 'all') {
+  const grid = document.getElementById('rssGrid');
+  grid.innerHTML = '';
+  const filtered = filter === 'all' ? allArticles : allArticles.filter(a => a.source === filter);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="rss-error">Aucun article disponible pour cette source.</div>';
+    return;
+  }
+  filtered.forEach(a => grid.appendChild(buildCard(a)));
+}
+
+async function fetchFeed(source) {
+  try {
+    const res = await fetch(`${RSS_PROXY}${encodeURIComponent(source.url)}&count=4&api_key=drzgsnhyxqljpsmqnxvhzfzqcwbh2xabfh5xoqoy`);
+    const data = await res.json();
+    if (data.status !== 'ok' || !data.items) return [];
+    return data.items.slice(0, 4).map(item => ({ ...item, source: source.key }));
+  } catch {
+    return [];
+  }
+}
+
+async function loadAllFeeds() {
+  const grid = document.getElementById('rssGrid');
+  grid.innerHTML = '<div class="rss-loading"><div class="rss-spinner"></div><p>Chargement des articles…</p></div>';
+
+  const results = await Promise.allSettled(RSS_SOURCES.map(s => fetchFeed(s)));
+  allArticles = results
+    .flatMap(r => r.status === 'fulfilled' ? r.value : [])
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+  if (allArticles.length === 0) {
+    grid.innerHTML = '<div class="rss-error">⚠️ Impossible de charger les articles. Vérifiez votre connexion ou réessayez plus tard.</div>';
+    return;
+  }
+
+  renderArticles('all');
+}
+
+// Filters
+document.getElementById('rssFilters').addEventListener('click', e => {
+  const btn = e.target.closest('.rss-filter');
+  if (!btn) return;
+  document.querySelectorAll('.rss-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderArticles(btn.dataset.source);
+});
+
+// Load feeds when veille section is visible
+const veilleSection = document.getElementById('veille');
+let feedLoaded = false;
+const feedObserver = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !feedLoaded) {
+    feedLoaded = true;
+    loadAllFeeds();
+  }
+}, { threshold: 0.1 });
+feedObserver.observe(veilleSection);
 </script>
 </body>
 </html>
