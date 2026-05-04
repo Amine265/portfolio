@@ -1652,8 +1652,6 @@ const observer = new IntersectionObserver(entries => {
 reveals.forEach(el => observer.observe(el));
 
 // ===================== RSS FEED =====================
-const RSS_PROXY = 'https://api.rss2json.com/v1/api.json?rss_url=';
-
 const RSS_SOURCES = [
   {
     key: 'mit',
@@ -1680,13 +1678,14 @@ let allArticles = [];
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
+  if (isNaN(d)) return '';
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function stripHtml(html) {
   const tmp = document.createElement('div');
   tmp.innerHTML = html || '';
-  return tmp.textContent || tmp.innerText || '';
+  return (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
 }
 
 function buildCard(article) {
@@ -1694,7 +1693,7 @@ function buildCard(article) {
   const desc = stripHtml(article.description).substring(0, 160).trim();
   const card = document.createElement('a');
   card.className = 'rss-card';
-  card.href = article.link;
+  card.href = article.link || '#';
   card.target = '_blank';
   card.rel = 'noopener noreferrer';
   card.dataset.source = article.source;
@@ -1703,8 +1702,8 @@ function buildCard(article) {
       <span class="rss-source-badge ${source.badgeClass}">${source.name}</span>
       <span class="rss-date">${formatDate(article.pubDate)}</span>
     </div>
-    <p class="rss-title">${article.title}</p>
-    <p class="rss-desc">${desc}${desc.length >= 160 ? '…' : ''}</p>
+    <p class="rss-title">${article.title || 'Sans titre'}</p>
+    <p class="rss-desc">${desc ? desc + (desc.length >= 160 ? '…' : '') : ''}</p>
     <span class="rss-read">
       Lire l'article
       <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1727,12 +1726,38 @@ function renderArticles(filter = 'all') {
 }
 
 async function fetchFeed(source) {
+  // Utilise allorigins.win pour contourner le CORS sans clé API
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(source.url)}`;
   try {
-    const res = await fetch(`${RSS_PROXY}${encodeURIComponent(source.url)}&count=4&api_key=drzgsnhyxqljpsmqnxvhzfzqcwbh2xabfh5xoqoy`);
+    const res = await fetch(proxyUrl);
     const data = await res.json();
-    if (data.status !== 'ok' || !data.items) return [];
-    return data.items.slice(0, 4).map(item => ({ ...item, source: source.key }));
-  } catch {
+    if (!data.contents) return [];
+
+    // Parse le XML du flux RSS
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(data.contents, 'text/xml');
+
+    // Support RSS 2.0 et Atom
+    const items = [...xml.querySelectorAll('item, entry')];
+
+    return items.slice(0, 4).map(item => {
+      const getText = (tag) => {
+        const el = item.querySelector(tag);
+        return el ? (el.textContent || el.innerHTML || '').trim() : '';
+      };
+      const link = getText('link') || item.querySelector('link')?.getAttribute('href') || '';
+      const pubDate = getText('pubDate') || getText('published') || getText('updated') || '';
+      const description = getText('description') || getText('summary') || getText('content') || '';
+      return {
+        title: getText('title'),
+        link,
+        pubDate,
+        description,
+        source: source.key
+      };
+    });
+  } catch (e) {
+    console.warn(`Erreur fetch ${source.key}:`, e);
     return [];
   }
 }
@@ -1744,17 +1769,18 @@ async function loadAllFeeds() {
   const results = await Promise.allSettled(RSS_SOURCES.map(s => fetchFeed(s)));
   allArticles = results
     .flatMap(r => r.status === 'fulfilled' ? r.value : [])
+    .filter(a => a.title)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
   if (allArticles.length === 0) {
-    grid.innerHTML = '<div class="rss-error">⚠️ Impossible de charger les articles. Vérifiez votre connexion ou réessayez plus tard.</div>';
+    grid.innerHTML = '<div class="rss-error">⚠️ Impossible de charger les articles pour le moment. Réessayez plus tard.</div>';
     return;
   }
 
   renderArticles('all');
 }
 
-// Filters
+// Filtres
 document.getElementById('rssFilters').addEventListener('click', e => {
   const btn = e.target.closest('.rss-filter');
   if (!btn) return;
@@ -1763,7 +1789,7 @@ document.getElementById('rssFilters').addEventListener('click', e => {
   renderArticles(btn.dataset.source);
 });
 
-// Load feeds when veille section is visible
+// Charge les articles quand la section veille devient visible
 const veilleSection = document.getElementById('veille');
 let feedLoaded = false;
 const feedObserver = new IntersectionObserver(entries => {
