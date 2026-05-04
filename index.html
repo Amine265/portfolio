@@ -1554,26 +1554,26 @@ footer {
     <div class="veille-sources-grid">
       <div class="source-card">
         <span class="source-icon">📰</span>
-        <p class="source-nom">MIT Technology Review</p>
-        <p class="source-desc">Publication de référence sur les avancées technologiques mondiales en IA.</p>
+        <p class="source-nom">Le Monde — IA</p>
+        <p class="source-desc">Actualités et analyses sur l'intelligence artificielle par la rédaction du Monde.</p>
+        <span class="source-tag">Presse</span>
+      </div>
+      <div class="source-card">
+        <span class="source-icon">🔬</span>
+        <p class="source-nom">Numerama</p>
+        <p class="source-desc">Média tech français couvrant les innovations numériques et l'IA au quotidien.</p>
         <span class="source-tag">Site web</span>
       </div>
       <div class="source-card">
-        <span class="source-icon">🤗</span>
-        <p class="source-nom">Hugging Face Blog</p>
-        <p class="source-desc">Actualités de la communauté open-source autour des LLM et du deep learning.</p>
-        <span class="source-tag">Blog technique</span>
-      </div>
-      <div class="source-card">
-        <span class="source-icon">📡</span>
-        <p class="source-nom">The Decoder</p>
-        <p class="source-desc">Veille spécialisée sur l'IA générative et ses applications concrètes.</p>
-        <span class="source-tag">Newsletter</span>
+        <span class="source-icon">💻</span>
+        <p class="source-nom">01net</p>
+        <p class="source-desc">Référence française en informatique et nouvelles technologies, incluant l'IA.</p>
+        <span class="source-tag">Site web</span>
       </div>
       <div class="source-card">
         <span class="source-icon">▶️</span>
         <p class="source-nom">YouTube — Dot CSV</p>
-        <p class="source-desc">Vulgarisation des derniers papiers de recherche en IA.</p>
+        <p class="source-desc">Vulgarisation des derniers papiers de recherche en IA, accessibles aux étudiants en info.</p>
         <span class="source-tag">Vidéo</span>
       </div>
       <div class="source-card">
@@ -1603,9 +1603,9 @@ footer {
       </div>
       <div class="rss-filters" id="rssFilters">
         <button class="rss-filter active" data-source="all">Tous</button>
-        <button class="rss-filter" data-source="mit">MIT Review</button>
-        <button class="rss-filter" data-source="hf">Hugging Face</button>
-        <button class="rss-filter" data-source="decoder">The Decoder</button>
+        <button class="rss-filter" data-source="mit">Le Monde IA</button>
+        <button class="rss-filter" data-source="hf">Numerama</button>
+        <button class="rss-filter" data-source="decoder">01net</button>
       </div>
     </div>
     <div class="rss-grid" id="rssGrid">
@@ -1707,20 +1707,20 @@ reveals.forEach(el => observer.observe(el));
 const RSS_SOURCES = [
   {
     key: 'mit',
-    name: 'MIT Review',
-    url: 'https://www.technologyreview.com/feed/',
+    name: 'Le Monde IA',
+    url: 'https://www.lemonde.fr/intelligence-artificielle/rss_full.xml',
     badgeClass: 'badge-mit'
   },
   {
     key: 'hf',
-    name: 'Hugging Face',
-    url: 'https://huggingface.co/blog/feed.xml',
+    name: 'Numerama',
+    url: 'https://www.numerama.com/feed/',
     badgeClass: 'badge-hf'
   },
   {
     key: 'decoder',
-    name: 'The Decoder',
-    url: 'https://the-decoder.com/feed/',
+    name: '01net',
+    url: 'https://www.01net.com/feed/',
     badgeClass: 'badge-decoder'
   }
 ];
