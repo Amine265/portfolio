@@ -766,6 +766,26 @@ section {
   border: 1px solid var(--border);
   color: var(--dim);
 }
+.tp-dl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cyan);
+  text-decoration: none;
+  padding: 5px 12px;
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 100px;
+  background: rgba(6,182,212,0.06);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.tp-dl:hover {
+  background: rgba(6,182,212,0.14);
+  border-color: rgba(6,182,212,0.4);
+  transform: translateY(-1px);
+}
 
 /* ===================== VEILLE ===================== */
 .veille-container {
@@ -1401,6 +1421,10 @@ footer {
         <span class="tp-pill">isc-dhcp-server</span>
         <span class="tp-pill">Failover</span>
       </div>
+      <a class="tp-dl" href="docs/DHCP-failover.pdf" download>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le TP
+      </a>
     </div>
 
     <div class="tp-card t2 reveal reveal-delay-2">
@@ -1413,6 +1437,10 @@ footer {
         <span class="tp-pill">cryptsetup</span>
         <span class="tp-pill">ext4</span>
       </div>
+      <a class="tp-dl" href="docs/Chiffrer_les_données.pdf" download>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le TP
+      </a>
     </div>
 
     <div class="tp-card t3 reveal reveal-delay-3">
@@ -1425,6 +1453,10 @@ footer {
         <span class="tp-pill">Partitions</span>
         <span class="tp-pill">Linux</span>
       </div>
+      <a class="tp-dl" href="docs/disque__1_.pdf" download>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le TP
+      </a>
     </div>
 
     <div class="tp-card t4 reveal reveal-delay-1">
@@ -1437,6 +1469,10 @@ footer {
         <span class="tp-pill">RSA</span>
         <span class="tp-pill">2FA</span>
       </div>
+      <a class="tp-dl" href="docs/SSH_tp__1_.pdf" download>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le TP
+      </a>
     </div>
 
     <div class="tp-card t5 reveal reveal-delay-2">
@@ -1449,6 +1485,10 @@ footer {
         <span class="tp-pill">SSL</span>
         <span class="tp-pill">PHP-FPM</span>
       </div>
+      <a class="tp-dl" href="docs/apache23.pdf" download>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le TP
+      </a>
     </div>
 
     <div class="tp-card t6 reveal reveal-delay-3">
@@ -1461,7 +1501,19 @@ footer {
         <span class="tp-pill">JDBC</span>
         <span class="tp-pill">MySQL</span>
       </div>
+      <a class="tp-dl" href="docs/TP_Java_Interface_graphique.pdf" download>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Télécharger le TP
+      </a>
     </div>
+  </div>
+
+  <!-- Tableau de synthèse -->
+  <div class="reveal" style="margin-top: 40px; text-align: center;">
+    <a class="link-btn primary" href="docs/tableau-competence-1.pdf" download style="display:inline-flex;">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Télécharger le tableau de synthèse E5
+    </a>
   </div>
 </section>
 
