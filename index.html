@@ -1777,55 +1777,93 @@ function renderArticles(filter = 'all') {
   filtered.forEach(a => grid.appendChild(buildCard(a)));
 }
 
-async function fetchFeed(source) {
-  // Utilise allorigins.win pour contourner le CORS sans clé API
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(source.url)}`;
-  try {
-    const res = await fetch(proxyUrl);
-    const data = await res.json();
-    if (!data.contents) return [];
-
-    // Parse le XML du flux RSS
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(data.contents, 'text/xml');
-
-    // Support RSS 2.0 et Atom
-    const items = [...xml.querySelectorAll('item, entry')];
-
-    return items.slice(0, 4).map(item => {
-      const getText = (tag) => {
-        const el = item.querySelector(tag);
-        return el ? (el.textContent || el.innerHTML || '').trim() : '';
-      };
-      const link = getText('link') || item.querySelector('link')?.getAttribute('href') || '';
-      const pubDate = getText('pubDate') || getText('published') || getText('updated') || '';
-      const description = getText('description') || getText('summary') || getText('content') || '';
-      return {
-        title: getText('title'),
-        link,
-        pubDate,
-        description,
+// Essaie plusieurs proxies RSS dans l'ordre
+async function fetchWithProxy(source) {
+  const proxies = [
+    // Proxy 1 : rss2json (gratuit, sans clé)
+    async () => {
+      const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}&count=4`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.status !== 'ok' || !data.items?.length) throw new Error('rss2json failed');
+      return data.items.map(item => ({
+        title: item.title,
+        link: item.link,
+        pubDate: item.pubDate,
+        description: item.description || item.content || '',
         source: source.key
-      };
-    });
-  } catch (e) {
-    console.warn(`Erreur fetch ${source.key}:`, e);
-    return [];
+      }));
+    },
+    // Proxy 2 : corsproxy.io
+    async () => {
+      const url = `https://corsproxy.io/?${encodeURIComponent(source.url)}`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'text/xml');
+      const items = [...xml.querySelectorAll('item, entry')];
+      if (!items.length) throw new Error('corsproxy failed');
+      return items.slice(0, 4).map(item => {
+        const get = tag => item.querySelector(tag)?.textContent?.trim() || '';
+        return {
+          title: get('title'),
+          link: get('link') || item.querySelector('link')?.getAttribute('href') || '',
+          pubDate: get('pubDate') || get('published') || get('updated') || '',
+          description: get('description') || get('summary') || get('content') || '',
+          source: source.key
+        };
+      });
+    },
+    // Proxy 3 : allorigins
+    async () => {
+      const url = `https://api.allorigins.win/get?url=${encodeURIComponent(source.url)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.contents) throw new Error('allorigins failed');
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(data.contents, 'text/xml');
+      const items = [...xml.querySelectorAll('item, entry')];
+      if (!items.length) throw new Error('allorigins no items');
+      return items.slice(0, 4).map(item => {
+        const get = tag => item.querySelector(tag)?.textContent?.trim() || '';
+        return {
+          title: get('title'),
+          link: get('link') || item.querySelector('link')?.getAttribute('href') || '',
+          pubDate: get('pubDate') || get('published') || get('updated') || '',
+          description: get('description') || get('summary') || get('content') || '',
+          source: source.key
+        };
+      });
+    }
+  ];
+
+  for (const proxy of proxies) {
+    try {
+      const result = await proxy();
+      if (result?.length) return result;
+    } catch (e) {
+      continue;
+    }
   }
+  return [];
 }
 
 async function loadAllFeeds() {
   const grid = document.getElementById('rssGrid');
   grid.innerHTML = '<div class="rss-loading"><div class="rss-spinner"></div><p>Chargement des articles…</p></div>';
 
-  const results = await Promise.allSettled(RSS_SOURCES.map(s => fetchFeed(s)));
+  const results = await Promise.allSettled(RSS_SOURCES.map(s => fetchWithProxy(s)));
   allArticles = results
     .flatMap(r => r.status === 'fulfilled' ? r.value : [])
     .filter(a => a.title)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
   if (allArticles.length === 0) {
-    grid.innerHTML = '<div class="rss-error">⚠️ Impossible de charger les articles pour le moment. Réessayez plus tard.</div>';
+    grid.innerHTML = `
+      <div class="rss-error">
+        ⚠️ Les articles ne peuvent pas être chargés en ce moment.<br>
+        <small style="opacity:0.6;margin-top:8px;display:block">Consultez directement les sources : <a href="https://the-decoder.com" target="_blank" style="color:var(--violet)">The Decoder</a> · <a href="https://huggingface.co/blog" target="_blank" style="color:var(--violet)">Hugging Face</a></small>
+      </div>`;
     return;
   }
 
