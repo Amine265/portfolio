@@ -1566,8 +1566,8 @@ footer {
       </div>
       <div class="source-card">
         <span class="source-icon">💻</span>
-        <p class="source-nom">01net</p>
-        <p class="source-desc">Référence française en informatique et nouvelles technologies, incluant l'IA.</p>
+        <p class="source-nom">ZDNet France</p>
+        <p class="source-desc">Actualités tech et IA pour les professionnels IT, avec analyses et dossiers spécialisés.</p>
         <span class="source-tag">Site web</span>
       </div>
       <div class="source-card">
@@ -1605,7 +1605,7 @@ footer {
         <button class="rss-filter active" data-source="all">Tous</button>
         <button class="rss-filter" data-source="mit">Le Monde IA</button>
         <button class="rss-filter" data-source="hf">Numerama</button>
-        <button class="rss-filter" data-source="decoder">01net</button>
+        <button class="rss-filter" data-source="decoder">ZDNet France</button>
       </div>
     </div>
     <div class="rss-grid" id="rssGrid">
@@ -1709,21 +1709,38 @@ const RSS_SOURCES = [
     key: 'mit',
     name: 'Le Monde IA',
     url: 'https://www.lemonde.fr/intelligence-artificielle/rss_full.xml',
-    badgeClass: 'badge-mit'
+    badgeClass: 'badge-mit',
+    filterIA: false
   },
   {
     key: 'hf',
     name: 'Numerama',
     url: 'https://www.numerama.com/feed/',
-    badgeClass: 'badge-hf'
+    badgeClass: 'badge-hf',
+    filterIA: true
   },
   {
     key: 'decoder',
-    name: '01net',
-    url: 'https://www.01net.com/feed/',
-    badgeClass: 'badge-decoder'
+    name: 'ZDNet France',
+    url: 'https://www.zdnet.fr/feeds/rss/actualites/',
+    badgeClass: 'badge-decoder',
+    filterIA: true
   }
 ];
+
+// Mots-clés IA pour filtrer les articles
+const IA_KEYWORDS = [
+  'intelligence artificielle', 'ia ', ' ia,', 'chatgpt', 'gpt', 'llm',
+  'openai', 'gemini', 'claude', 'mistral', 'deepseek', 'copilot',
+  'machine learning', 'deep learning', 'algorithme', 'modèle',
+  'generatif', 'génératif', 'chatbot', 'robot', 'automation',
+  'anthropic', 'google ai', 'nvidia', 'artificial intelligence'
+];
+
+function isAboutIA(article) {
+  const text = (article.title + ' ' + article.description).toLowerCase();
+  return IA_KEYWORDS.some(kw => text.includes(kw));
+}
 
 let allArticles = [];
 
@@ -1854,7 +1871,11 @@ async function loadAllFeeds() {
 
   const results = await Promise.allSettled(RSS_SOURCES.map(s => fetchWithProxy(s)));
   allArticles = results
-    .flatMap(r => r.status === 'fulfilled' ? r.value : [])
+    .flatMap((r, i) => {
+      if (r.status !== 'fulfilled') return [];
+      const source = RSS_SOURCES[i];
+      return source.filterIA ? r.value.filter(a => isAboutIA(a)) : r.value;
+    })
     .filter(a => a.title)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
